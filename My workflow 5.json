@@ -1,0 +1,429 @@
+{
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "sender": "shaziarafiq1070@gmail.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -704,
+        -16
+      ],
+      "id": "ad022842-e5e1-4dd4-b63e-43df72a93b36",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CjLd8bSea0zupCSv",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## steps\nadd a gmail node\nftech the mai\nread and add comments in mail\n\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -992,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "f69b47e4-c0a8-4172-a71c-fc6b795a0188",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=here is the code below\ncode:\n {{ $json.text }}\njust add the comments in the code so i acn easily understand the code \nNote:Do not change the code at all\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a helful asssistant and know about the codes so you can help me to understand the code in a better way by using different models\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -352,
+        -144
+      ],
+      "id": "d3c3774c-24fe-4580-9d3e-7cfac891bf6e",
+      "name": "comment addition"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=here below is the code\ncode:\n{{ $json.text }}\n\nYou have to read and code thoroghly and then summarize this code in simpe and easy lanuage so that i can understand what the code is acctuallly doing and where are errors in thiss code",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an expert in reading and finding the error in the code and making it understandable for th user and in finding the errors"
+            },
+            {
+              "message": "You are an expert in reading and finding the error in the code and making it understandable for th user and in finding the errors"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -384,
+        224
+      ],
+      "id": "36c49870-0330-4130-9de9-c226f4a2fbb9",
+      "name": "code _summary"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        80
+      ],
+      "id": "c362c2a7-7d6a-4d1e-a4a6-cd053754e8e4",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ukAaZzzSGzEd0LZO",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        432
+      ],
+      "id": "5654e5f5-fabf-42e0-89bd-f0a95366b5db",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ukAaZzzSGzEd0LZO",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -96,
+        16
+      ],
+      "id": "aeab7f3f-f4e9-47f7-b0b8-e4319c57f025",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        64,
+        16
+      ],
+      "id": "1ff5608e-0c35-42f1-9245-4f83ae1a8d6d",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "sendTo": "shaziarafiq1070@gmail.com",
+        "subject": "comment and code summary",
+        "message": "= code commments:\n {{ $json.text[0] }}\ncode summary:\n\n{{ $json.text[1] }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        16
+      ],
+      "id": "05ee5870-4728-40fe-9bc1-24d1af4e50c7",
+      "name": "Send a message",
+      "webhookId": "6e5fe869-1ee5-48e8-8095-67d4b680597d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CjLd8bSea0zupCSv",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b483b8e9-e7fe-49df-ba9c-a7de339f6b9e",
+              "name": "message",
+              "value": "=comment code:\n{{ $json.text[0] }}\nsummary code \n{{ $json.text[1] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        16
+      ],
+      "id": "50c3a0c5-6839-4369-b016-6192508076df",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=convert the meaage below into proper format of html make it attractive and esay to understandable add proper space and make block where required make it in a presentable form  \n\n {{ $('Aggregate').item.json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "you are and expert in reading the code and formatted it properly"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        16
+      ],
+      "id": "ff047830-ef4b-4bfe-baee-fcbc20b3e7cb",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        448,
+        272
+      ],
+      "id": "0976e27d-6bc9-463a-959b-2d7606c5ee98",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ukAaZzzSGzEd0LZO",
+          "name": "OpenRouter account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "19eb10af5cb6ba5c",
+          "threadId": "19eb109f140bbba0",
+          "labelIds": [
+            "IMPORTANT",
+            "SENT",
+            "INBOX"
+          ],
+          "sizeEstimate": 9997,
+          "headers": {
+            "mime-version": "MIME-Version: 1.0",
+            "date": "Date: Wed, 10 Jun 2026 15:19:04 +0500",
+            "message-id": "Message-ID: <CA+11E1y3OQQaa9+a7wUb8cEthv+ADsGG8TtDXmwQBYsOOB_kNQ@mail.gmail.com>",
+            "subject": "Subject: Debugg the code ",
+            "from": "From: BAIF25MO30 SADIA ABDUL MAJEED <shaziarafiq1070@gmail.com>",
+            "to": "To: BAIF25MO30 SADIA ABDUL MAJEED <shaziarafiq1070@gmail.com>",
+            "content-type": "Content-Type: multipart/alternative; boundary=\"000000000000cdabb10653e392ec\""
+          },
+          "html": "<div dir=\"auto\"><div><br></div><div>#include &lt;iostream&gt;</div><div dir=\"auto\">#include &lt;fstream&gt;</div><div dir=\"auto\">#include &lt;chrono&gt;</div><div dir=\"auto\">#include &lt;string&gt;</div><div dir=\"auto\">#include &lt;vector&gt;</div><div dir=\"auto\">#include &lt;sstream&gt;</div><div dir=\"auto\">#include &lt;execinfo.h&gt; // for backtrace on Linux/Mac</div><div dir=\"auto\">#include &lt;unistd.h&gt;</div><div dir=\"auto\"><br></div><div dir=\"auto\">class Debug {</div><div dir=\"auto\">public:</div><div dir=\"auto\">    static std::ofstream logfile;</div><div dir=\"auto\">    static bool enabled;</div><div dir=\"auto\"><br></div><div dir=\"auto\">    static void Init(const std::string&amp; filename = &quot;debug.log&quot;) {</div><div dir=\"auto\">        logfile.open(filename, std::ios::app);</div><div dir=\"auto\">        enabled = true;</div><div dir=\"auto\">        Log(&quot;=== Debug session started ===&quot;);</div><div dir=\"auto\">    }</div><div dir=\"auto\"><br></div><div dir=\"auto\">    static void Shutdown() {</div><div dir=\"auto\">        if (logfile.is_open()) {</div><div dir=\"auto\">            Log(&quot;=== Debug session ended ===&quot;);</div><div dir=\"auto\">            logfile.close();</div><div dir=\"auto\">        }</div><div dir=\"auto\">    }</div><div dir=\"auto\"><br></div><div dir=\"auto\">    template&lt;typename... Args&gt;</div><div dir=\"auto\">    static void Log(const char* file, int line, const char* func, Args&amp;&amp;... args) {</div><div dir=\"auto\">        if (!enabled) return;</div><div dir=\"auto\">        auto now = std::chrono::system_clock::now();</div><div dir=\"auto\">        auto t = std::chrono::system_clock::to_time_t(now);</div><div dir=\"auto\"><br></div><div dir=\"auto\">        logfile &lt;&lt; &quot;[&quot; &lt;&lt; std::ctime(&amp;t) &lt;&lt; &quot;] &quot;</div><div dir=\"auto\">                &lt;&lt; file &lt;&lt; &quot;:&quot; &lt;&lt; line &lt;&lt; &quot; &lt;&lt; func &lt;&lt; &quot;() - &quot;;</div><div dir=\"auto\">        (logfile &lt;&lt;... &lt;&lt; args) &lt;&lt; std::endl;</div><div dir=\"auto\">        logfile.flush();</div><div dir=\"auto\"><br></div><div dir=\"auto\">        std::cout &lt;&lt; &quot;[&quot; &lt;&lt; file &lt;&lt; &quot;:&quot; &lt;&lt; line &lt;&lt; &quot;] &quot;;</div><div dir=\"auto\">        (std::cout &lt;&lt;... &lt;&lt; args) &lt;&lt; std::endl;</div><div dir=\"auto\">    }</div><div dir=\"auto\"><br></div><div dir=\"auto\">    static void PrintStackTrace() {</div><div dir=\"auto\">        void* buffer[100];</div><div dir=\"auto\">        int n = backtrace(buffer, 100);</div><div dir=\"auto\">        char** symbols = backtrace_symbols(buffer, n);</div><div dir=\"auto\"><br></div><div dir=\"auto\">        Log(__FILE__, __LINE__, __func__, &quot;Stack trace:&quot;);</div><div dir=\"auto\">        for (int i = 1; i &lt; n; ++i) { // skip this function</div><div dir=\"auto\">            Log(__FILE__, __LINE__, __func__, &quot; &quot;, symbols[i]);</div><div dir=\"auto\">        }</div><div dir=\"auto\">        free(symbols);</div><div dir=\"auto\">    }</div><div dir=\"auto\">};</div><div dir=\"auto\"><br></div><div dir=\"auto\">std::ofstream Debug::logfile;</div><div dir=\"auto\">bool Debug::enabled = false;</div><div dir=\"auto\"><br></div><div dir=\"auto\">// Macro magic so you get __FILE__, __LINE__, __func__ automatically</div><div dir=\"auto\">#define DBG(...) Debug::Log(__FILE__, __LINE__, __func__, __VA_ARGS__)</div><div dir=\"auto\">#define DBG_STACK() Debug::PrintStackTrace()</div><div dir=\"auto\"><br></div><div dir=\"auto\">// RAII timer: tells you how long a scope took</div><div dir=\"auto\">class ScopedTimer {</div><div dir=\"auto\">    std::string name;</div><div dir=\"auto\">    std::chrono::high_resolution_clock::time_point start;</div><div dir=\"auto\">public:</div><div dir=\"auto\">    ScopedTimer(const std::string&amp; n) : name(n), start(std::chrono::high_resolution_clock::now()) {</div><div dir=\"auto\">        DBG(&quot;Timer started: &quot;, name);</div><div dir=\"auto\">    }</div><div dir=\"auto\">    ~ScopedTimer() {</div><div dir=\"auto\">        auto end = std::chrono::high_resolution_clock::now();</div><div dir=\"auto\">        auto ms = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start).count();</div><div dir=\"auto\">        DBG(&quot;Timer ended: &quot;, name, &quot; took &quot;, ms, &quot; ms&quot;);</div><div dir=\"auto\">    }</div><div dir=\"auto\">};</div><div dir=\"auto\"><br></div><div dir=\"auto\">// Assert with stack trace</div><div dir=\"auto\">#define DBG_ASSERT(cond, msg) \\</div><div dir=\"auto\">    if (!(cond)) { \\</div><div dir=\"auto\">        DBG(&quot;ASSERT FAILED: &quot;, msg); \\</div><div dir=\"auto\">        DBG_STACK(); \\</div><div dir=\"auto\">        std::abort(); \\</div><div dir=\"auto\">    }</div><div dir=\"auto\"><br></div><div dir=\"auto\">// Example usage</div><div dir=\"auto\">int divide(int a, int b) {</div><div dir=\"auto\">    DBG(&quot;divide called with a=&quot;, a, &quot; b=&quot;, b);</div><div dir=\"auto\">    DBG_ASSERT(b!= 0, &quot;Division by zero!&quot;);</div><div dir=\"auto\">    return</div><div data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><i><b>Sadia</b></i><table cellpadding=\"0\" style=\"width:479px\"><tbody><tr><td style=\"width:475px\"><div></div></td></tr></tbody></table></div></div></div>\n",
+          "text": "#include <iostream>\n#include <fstream>\n#include <chrono>\n#include <string>\n#include <vector>\n#include <sstream>\n#include <execinfo.h> // for backtrace on Linux/Mac\n#include <unistd.h>\n\nclass Debug {\npublic:\n    static std::ofstream logfile;\n    static bool enabled;\n\n    static void Init(const std::string& filename = \"debug.log\") {\n        logfile.open(filename, std::ios::app);\n        enabled = true;\n        Log(\"=== Debug session started ===\");\n    }\n\n    static void Shutdown() {\n        if (logfile.is_open()) {\n            Log(\"=== Debug session ended ===\");\n            logfile.close();\n        }\n    }\n\n    template<typename... Args>\n    static void Log(const char* file, int line, const char* func, Args&&...\nargs) {\n        if (!enabled) return;\n        auto now = std::chrono::system_clock::now();\n        auto t = std::chrono::system_clock::to_time_t(now);\n\n        logfile << \"[\" << std::ctime(&t) << \"] \"\n                << file << \":\" << line << \" << func << \"() - \";\n        (logfile <<... << args) << std::endl;\n        logfile.flush();\n\n        std::cout << \"[\" << file << \":\" << line << \"] \";\n        (std::cout <<... << args) << std::endl;\n    }\n\n    static void PrintStackTrace() {\n        void* buffer[100];\n        int n = backtrace(buffer, 100);\n        char** symbols = backtrace_symbols(buffer, n);\n\n        Log(__FILE__, __LINE__, __func__, \"Stack trace:\");\n        for (int i = 1; i < n; ++i) { // skip this function\n            Log(__FILE__, __LINE__, __func__, \" \", symbols[i]);\n        }\n        free(symbols);\n    }\n};\n\nstd::ofstream Debug::logfile;\nbool Debug::enabled = false;\n\n// Macro magic so you get __FILE__, __LINE__, __func__ automatically\n#define DBG(...) Debug::Log(__FILE__, __LINE__, __func__, __VA_ARGS__)\n#define DBG_STACK() Debug::PrintStackTrace()\n\n// RAII timer: tells you how long a scope took\nclass ScopedTimer {\n    std::string name;\n    std::chrono::high_resolution_clock::time_point start;\npublic:\n    ScopedTimer(const std::string& n) : name(n),\nstart(std::chrono::high_resolution_clock::now()) {\n        DBG(\"Timer started: \", name);\n    }\n    ~ScopedTimer() {\n        auto end = std::chrono::high_resolution_clock::now();\n        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end\n- start).count();\n        DBG(\"Timer ended: \", name, \" took \", ms, \" ms\");\n    }\n};\n\n// Assert with stack trace\n#define DBG_ASSERT(cond, msg) \\\n    if (!(cond)) { \\\n        DBG(\"ASSERT FAILED: \", msg); \\\n        DBG_STACK(); \\\n        std::abort(); \\\n    }\n\n// Example usage\nint divide(int a, int b) {\n    DBG(\"divide called with a=\", a, \" b=\", b);\n    DBG_ASSERT(b!= 0, \"Division by zero!\");\n    return\n*Sadia*\n",
+          "textAsHtml": "<p>#include &lt;iostream&gt;<br/>#include &lt;fstream&gt;<br/>#include &lt;chrono&gt;<br/>#include &lt;string&gt;<br/>#include &lt;vector&gt;<br/>#include &lt;sstream&gt;<br/>#include &lt;execinfo.h&gt; // for backtrace on Linux/Mac<br/>#include &lt;unistd.h&gt;</p><p>class Debug {<br/>public:<br/>    static std::ofstream logfile;<br/>    static bool enabled;</p><p>    static void Init(const std::string&amp; filename = &quot;debug.log&quot;) {<br/>        <a href=\"http://logfile.open\">logfile.open</a>(filename, std::ios::app);<br/>        enabled = true;<br/>        Log(&quot;=== Debug session started ===&quot;);<br/>    }</p><p>    static void Shutdown() {<br/>        if (logfile.is_open()) {<br/>            Log(&quot;=== Debug session ended ===&quot;);<br/>            logfile.close();<br/>        }<br/>    }</p><p>    template&lt;typename... Args&gt;<br/>    static void Log(const char* file, int line, const char* func, Args&amp;&amp;...<br/>args) {<br/>        if (!enabled) return;<br/>        auto now = std::chrono::system_clock::now();<br/>        auto t = std::chrono::system_clock::to_time_t(now);</p><p>        logfile &lt;&lt; &quot;[&quot; &lt;&lt; std::ctime(&amp;t) &lt;&lt; &quot;] &quot;<br/>                &lt;&lt; file &lt;&lt; &quot;:&quot; &lt;&lt; line &lt;&lt; &quot; &lt;&lt; func &lt;&lt; &quot;() - &quot;;<br/>        (logfile &lt;&lt;... &lt;&lt; args) &lt;&lt; std::endl;<br/>        logfile.flush();</p><p>        std::cout &lt;&lt; &quot;[&quot; &lt;&lt; file &lt;&lt; &quot;:&quot; &lt;&lt; line &lt;&lt; &quot;] &quot;;<br/>        (std::cout &lt;&lt;... &lt;&lt; args) &lt;&lt; std::endl;<br/>    }</p><p>    static void PrintStackTrace() {<br/>        void* buffer[100];<br/>        int n = backtrace(buffer, 100);<br/>        char** symbols = backtrace_symbols(buffer, n);</p><p>        Log(__FILE__, __LINE__, __func__, &quot;Stack trace:&quot;);<br/>        for (int i = 1; i &lt; n; ++i) { // skip this function<br/>            Log(__FILE__, __LINE__, __func__, &quot; &quot;, symbols[i]);<br/>        }<br/>        free(symbols);<br/>    }<br/>};</p><p>std::ofstream Debug::logfile;<br/>bool Debug::enabled = false;</p><p>// Macro magic so you get __FILE__, __LINE__, __func__ automatically<br/>#define DBG(...) Debug::Log(__FILE__, __LINE__, __func__, __VA_ARGS__)<br/>#define DBG_STACK() Debug::PrintStackTrace()</p><p>// RAII timer: tells you how long a scope took<br/>class ScopedTimer {<br/>    std::string name;<br/>    std::chrono::high_resolution_clock::time_point start;<br/>public:<br/>    ScopedTimer(const std::string&amp; n) : name(n),<br/>start(std::chrono::high_resolution_clock::now()) {<br/>        DBG(&quot;Timer started: &quot;, name);<br/>    }<br/>    ~ScopedTimer() {<br/>        auto end = std::chrono::high_resolution_clock::now();<br/>        auto ms = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end<br/>- start).count();<br/>        DBG(&quot;Timer ended: &quot;, name, &quot; took &quot;, ms, &quot; ms&quot;);<br/>    }<br/>};</p><p>// Assert with stack trace<br/>#define DBG_ASSERT(cond, msg) \\<br/>    if (!(cond)) { \\<br/>        DBG(&quot;ASSERT FAILED: &quot;, msg); \\<br/>        DBG_STACK(); \\<br/>        std::abort(); \\<br/>    }</p><p>// Example usage<br/>int divide(int a, int b) {<br/>    DBG(&quot;divide called with a=&quot;, a, &quot; b=&quot;, b);<br/>    DBG_ASSERT(b!= 0, &quot;Division by zero!&quot;);<br/>    return<br/>*Sadia*</p>",
+          "subject": "Debugg the code",
+          "date": "2026-06-10T10:19:04.000Z",
+          "to": {
+            "value": [
+              {
+                "address": "shaziarafiq1070@gmail.com",
+                "name": "BAIF25MO30 SADIA ABDUL MAJEED"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">BAIF25MO30 SADIA ABDUL MAJEED</span> &lt;<a href=\"mailto:shaziarafiq1070@gmail.com\" class=\"mp_address_email\">shaziarafiq1070@gmail.com</a>&gt;</span>",
+            "text": "\"BAIF25MO30 SADIA ABDUL MAJEED\" <shaziarafiq1070@gmail.com>"
+          },
+          "from": {
+            "value": [
+              {
+                "address": "shaziarafiq1070@gmail.com",
+                "name": "BAIF25MO30 SADIA ABDUL MAJEED"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">BAIF25MO30 SADIA ABDUL MAJEED</span> &lt;<a href=\"mailto:shaziarafiq1070@gmail.com\" class=\"mp_address_email\">shaziarafiq1070@gmail.com</a>&gt;</span>",
+            "text": "\"BAIF25MO30 SADIA ABDUL MAJEED\" <shaziarafiq1070@gmail.com>"
+          },
+          "messageId": "<CA+11E1y3OQQaa9+a7wUb8cEthv+ADsGG8TtDXmwQBYsOOB_kNQ@mail.gmail.com>"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "comment addition",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "code _summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "comment addition": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "comment addition",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "code _summary",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "code _summary": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e111d83a-61ed-42fa-9117-816bd573e50d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3b73e9d267f3e1737872ba55b18274bd76d5c6d86ee9b5a92da884ae95247a0f"
+  },
+  "nodeGroups": [],
+  "id": "zu4oMvFcRHe7njhz",
+  "tags": []
+}
